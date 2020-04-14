@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "cov.h"
 #include "SPBufferset.h"
 
 
@@ -27,41 +28,85 @@ int main(int argc, char* argv[]) {
 	/*       declarations           */
 	char *inFile; /*, *outFile;*/
 	FILE* file;
-	int *numberOfColumns = NULL; /* 1st argument in the file */
-	int *numberOfRows = NULL; /* 2st argument in the file */
-	int ass = 0;
+	int numberOfColumns = 0; /* 1st argument in the file */
+	int numberOfRows = 0; /* 2nd argument in the file */
+	int ass = 0; /* For assertions */
+    double* matrix; /* Covariance matrix */
 
 
 
-	/*       code           */
 
-	printf("%d",argc);
-	assert(argv != NULL);
-
-
+    /*       code           */
 
 
 	/* WARN */
-	inFile = "input.arr"; /*argv[1];*/
+    assert(argc != 0);
+    assert(argv != NULL);
+	inFile = "/Users/user/CLionProjects/Assignment1/input.arr"; /*argv[1];*/
+    /* outFile = argv[2]; */
 	/* WARN */
 
-	/* outFile = argv[2]; */
+
 	file = fopen(inFile, "r");
 	assert(file!=NULL);
 
-
-	ass = fread(numberOfColumns, sizeof(int), 1, file);
+	ass = fread(&numberOfColumns, sizeof(int), 1, file);
 	assert(ass == 1);
-	ass = fread(numberOfRows, sizeof(int), 1, file);
+	ass = fread(&numberOfRows, sizeof(int), 1, file);
 	assert(ass == 1);
 
-	SP_BUFF_SET();
-	fclose(file);
+    matrix = (double *)malloc(numberOfRows * numberOfRows * sizeof(double));
+    assert(matrix != NULL);
+    printf("%d\n",numberOfColumns);
+    printf("%d\n",numberOfRows);
+
+    ass = fread(matrix, sizeof(double),numberOfColumns*numberOfRows,file);
+    assert(ass==numberOfColumns*numberOfRows);
+    PrintMat(&matrix[0],numberOfRows,numberOfColumns);
+    CalculateMeanForSingleVector(&matrix[0],6,numberOfRows,numberOfColumns);
 
 
 
-	/*  n  = fread(arr, sizeof(double), 4, file); */
-	return EXIT_SUCCESS;
+    /* Memory freeing block */
+    fclose(file);
+    free(matrix);
+    /* Memory freeing block */
 
+    SP_BUFF_SET();
+
+    return EXIT_SUCCESS;
+
+
+}
+
+int PrintMat(double* matrix,int numberOfRows,int numberOfColumns)
+{
+    int i,j; /* Iterators */
+
+    for (i = 0; i < numberOfRows; ++i) {
+        for (j = 0; j < numberOfColumns; ++j) {
+            printf("%f\t",matrix[i*numberOfColumns + j]);
+        }
+        printf("\n\n");
+    }
+    return EXIT_SUCCESS;
+}
+double CalculateMeanForSingleVector(double* matrix, int vector, int numberOfRows, int numberOfColumns)
+{
+    /* Declarations */
+    int startLocationOfVector;
+    float sum;
+    float mean;
+    int i;
+
+    printf("Calculating mean for vector %d\n",vector);
+    startLocationOfVector = vector * numberOfRows;
+    sum = 0;
+    for (i = 0; i < numberOfColumns; ++i) {
+        sum += matrix[startLocationOfVector + i];
+    }
+    mean = sum/numberOfColumns;
+    printf("%f",mean);
+    return mean;
 
 }
