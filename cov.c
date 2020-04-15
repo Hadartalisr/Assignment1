@@ -63,7 +63,8 @@ int main(int argc, char* argv[]) {
     ass = fread(matrix, sizeof(double),numberOfColumns*numberOfRows,file);
     assert(ass==numberOfColumns*numberOfRows);
     PrintMat(&matrix[0],numberOfRows,numberOfColumns);
-    CalculateMeanForSingleVector(&matrix[0],6,numberOfRows,numberOfColumns);
+    CalculateVectorWithMeanSub(&matrix[0],6,numberOfRows,numberOfColumns);
+    PrintMat(&matrix[0],numberOfRows,numberOfColumns);
 
 
 
@@ -95,8 +96,8 @@ double CalculateMeanForSingleVector(double* matrix, int vector, int numberOfRows
 {
     /* Declarations */
     int startLocationOfVector;
-    float sum;
-    float mean;
+    double sum;
+    double mean;
     int i;
 
     printf("Calculating mean for vector %d\n",vector);
@@ -106,7 +107,16 @@ double CalculateMeanForSingleVector(double* matrix, int vector, int numberOfRows
         sum += matrix[startLocationOfVector + i];
     }
     mean = sum/numberOfColumns;
-    printf("%f",mean);
+    printf("%f\n",mean);
     return mean;
 
 }
+int CalculateVectorWithMeanSub(double* matrix, int vector, int numberOfRows, int numberOfColumns)
+{
+    double mean = CalculateMeanForSingleVector(&matrix[0],vector,numberOfRows,numberOfColumns);
+    for (int i = 0; i < numberOfColumns; ++i) {
+        matrix[vector*numberOfColumns+i] -= mean;
+    }
+    return EXIT_SUCCESS;
+}
+//double CalculateDotProduct(double* matrix, )

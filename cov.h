@@ -6,4 +6,5 @@
 #define ASSIGNMENT1_COV_H
 int PrintMat(double* matrix,int numberOfRows,int numberOfColumns);
 double CalculateMeanForSingleVector(double* matrix, int vector, int numberOfRows, int numberOfColumns);
+int CalculateVectorWithMeanSub(double* matrix, int vector, int numberOfRows, int numberOfColumns);
 #endif /*ASSIGNMENT1_COV_H*/
