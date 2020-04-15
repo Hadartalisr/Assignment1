@@ -13,6 +13,7 @@
 #include <assert.h>
 #include "cov.h"
 #include "SPBufferset.h"
+#include <math.h>
 
 
 int main(int argc, char* argv[]) {
@@ -64,6 +65,7 @@ int main(int argc, char* argv[]) {
     assert(ass==numberOfColumns*numberOfRows);
     PrintMat(&matrix[0],numberOfRows,numberOfColumns);
     CalculateVectorWithMeanSub(&matrix[0],6,numberOfRows,numberOfColumns);
+    CalculateDotProduct(&matrix[0],6,6,numberOfColumns);
     PrintMat(&matrix[0],numberOfRows,numberOfColumns);
 
 
@@ -113,10 +115,21 @@ double CalculateMeanForSingleVector(double* matrix, int vector, int numberOfRows
 }
 int CalculateVectorWithMeanSub(double* matrix, int vector, int numberOfRows, int numberOfColumns)
 {
+    int i;
     double mean = CalculateMeanForSingleVector(&matrix[0],vector,numberOfRows,numberOfColumns);
-    for (int i = 0; i < numberOfColumns; ++i) {
+    for (i = 0; i < numberOfColumns; ++i) {
         matrix[vector*numberOfColumns+i] -= mean;
     }
     return EXIT_SUCCESS;
 }
-//double CalculateDotProduct(double* matrix, )
+double CalculateDotProduct(double* matrix, int vector1, int vector2, int numberOfColumns)
+{
+    double product;
+    int i;
+    product = 0;
+    for (i = 0; i < numberOfColumns; ++i) {
+        product += matrix[numberOfColumns*vector1 +i] * matrix[numberOfColumns*vector2 + i];
+    }
+    printf("%f\n",sqrt(product));
+    return sqrt(product);
+}
